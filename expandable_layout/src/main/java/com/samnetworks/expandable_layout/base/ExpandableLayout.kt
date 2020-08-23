@@ -15,16 +15,15 @@ import androidx.databinding.ViewDataBinding
 import com.samnetworks.expandable_layout.getMeasurements
 
 class ExpandableLayout : LinearLayout {
-    enum class STATE {
+    enum class State {
         EXPAND,
         COLLAPSE
     }
-
+    lateinit var currentState:State
     private lateinit var expandableView: View
     private lateinit var headerView: View
     @Volatile private var animating:Boolean = false
     @Volatile private var expandableViewHeight: Int = 0
-    var expanded: Boolean = true
     private val heightAnimator: ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         addUpdateListener {
             if (::expandableView.isInitialized) {
@@ -52,7 +51,7 @@ class ExpandableLayout : LinearLayout {
         defStyleAttr
     )
 
-    fun initView(headerView: View, expandableView: View, initialState: STATE = STATE.COLLAPSE) {
+    fun initView(headerView: View, expandableView: View, initialState: State = State.COLLAPSE) {
         orientation = VERTICAL
         this.headerView = headerView
         this.expandableView = expandableView
@@ -61,17 +60,17 @@ class ExpandableLayout : LinearLayout {
         setState(initialState)
     }
 
-    private fun setState(state: STATE) {
+    private fun setState(state: State) {
         when (state) {
-            STATE.EXPAND -> expand(0)
-            STATE.COLLAPSE -> collapse(0)
+            State.EXPAND -> expand(0)
+            State.COLLAPSE -> collapse(0)
         }
     }
 
     fun <H : ViewDataBinding, E : ViewDataBinding> initView(
         @LayoutRes headerView: Int,
         @LayoutRes expandableView: Int,
-        initialState: STATE = STATE.COLLAPSE
+        initialState: State = State.COLLAPSE
     ): Pair<H, E> {
         val inflater = LayoutInflater.from(context)
         val headerBinding = DataBindingUtil.inflate<H>(inflater, headerView, this, false)
@@ -84,21 +83,21 @@ class ExpandableLayout : LinearLayout {
     fun initView(
         headerViewBinding: ViewDataBinding,
         expandableViewBinding: ViewDataBinding,
-        initialState: STATE = STATE.COLLAPSE
+        initialState: State = State.COLLAPSE
     ) {
         return initView(headerViewBinding.root, expandableViewBinding.root, initialState)
     }
 
     fun expand(duration: Long = 300) {
-        animate(true, duration)
+        animate(State.EXPAND, duration)
     }
 
     fun collapse(duration: Long = 300) {
-        animate(false, duration)
+        animate(State.COLLAPSE, duration)
     }
 
     fun toggle():Boolean {
-        return if (expanded){
+        return if (currentState==State.EXPAND){
             collapse()
             false
         }else {
@@ -107,11 +106,11 @@ class ExpandableLayout : LinearLayout {
         }
     }
 
-    private fun animate(expand: Boolean, duration: Long) {
+    private fun animate(state: State, duration: Long) {
         if(!animating) {
             expandableViewHeight = expandableView.getMeasurements(this).second
             if (duration == 0L) {
-                if (expand) {
+                if (state==State.EXPAND) {
                     expandableView.layoutParams.height = expandableViewHeight
                 } else {
                     expandableView.layoutParams.height = 0
@@ -122,10 +121,10 @@ class ExpandableLayout : LinearLayout {
                 heightAnimator.addListener(
                     onStart = { animating = true },
                     onEnd = {
-                        this.expanded = expand
+                        this.currentState = state
                         animating = false
                     })
-                if (expand) heightAnimator.start() else heightAnimator.reverse()
+                if (state==State.EXPAND) heightAnimator.start() else heightAnimator.reverse()
             }
         }
     }
