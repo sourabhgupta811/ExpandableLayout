@@ -97,8 +97,14 @@ class ExpandableLayout : LinearLayout {
         animate(false, duration)
     }
 
-    fun toggle() {
-        if (expanded) collapse() else expand()
+    fun toggle():Boolean {
+        return if (expanded){
+            collapse()
+            false
+        }else {
+            expand()
+            true
+        }
     }
 
     private fun animate(expand: Boolean, duration: Long) {
@@ -110,6 +116,7 @@ class ExpandableLayout : LinearLayout {
                 } else {
                     expandableView.layoutParams.height = 0
                 }
+                requestLayout()
             } else {
                 heightAnimator.duration = duration
                 heightAnimator.addListener(
