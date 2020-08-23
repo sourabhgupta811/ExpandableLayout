@@ -1,7 +1,7 @@
 # ExpandableLayout
 Easy to use ExpandableLayout for Android.
 
-<br><b>Examples included-</b>
+<br><b>Sample included-</b>
 <ul>
 <li>
     <a href="https://github.com/sourabhgupta811/ExpandableLayout/blob/master/app/src/main/java/com/samnetworks/expandablelayout/RecyclerViewAdapter.kt">ExpandableLayout in RecyclerView</a>
