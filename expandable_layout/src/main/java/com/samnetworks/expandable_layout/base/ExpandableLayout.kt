@@ -22,8 +22,8 @@ class ExpandableLayout : LinearLayout {
 
     private lateinit var expandableView: View
     private lateinit var headerView: View
-    @Volatile
-    private var expandableViewHeight: Int = 0
+    @Volatile private var animating:Boolean = false
+    @Volatile private var expandableViewHeight: Int = 0
     var expanded: Boolean = true
     private val heightAnimator: ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         addUpdateListener {
@@ -102,20 +102,24 @@ class ExpandableLayout : LinearLayout {
     }
 
     private fun animate(expand: Boolean, duration: Long) {
-        expandableViewHeight = expandableView.getMeasurements(this).second
-        if (duration == 0L) {
-            if (expand) {
-                expandableView.layoutParams.height = expandableViewHeight
+        if(!animating) {
+            expandableViewHeight = expandableView.getMeasurements(this).second
+            if (duration == 0L) {
+                if (expand) {
+                    expandableView.layoutParams.height = expandableViewHeight
+                } else {
+                    expandableView.layoutParams.height = 0
+                }
             } else {
-                expandableView.layoutParams.height = 0
+                heightAnimator.duration = duration
+                heightAnimator.addListener(
+                    onStart = { animating = true },
+                    onEnd = {
+                        this.expanded = expand
+                        animating = false
+                    })
+                if (expand) heightAnimator.start() else heightAnimator.reverse()
             }
-        } else {
-            heightAnimator.duration = duration
-            heightAnimator.addListener(
-                onEnd = {
-                    this.expanded = expand
-                })
-            if (expand) heightAnimator.start() else heightAnimator.reverse()
         }
     }
 }

@@ -29,7 +29,7 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
 
     override fun getItemCount(): Int = list.size
 
-    inner class RecyclerViewHolder(val rootBinding: RecyclerViewItemBinding):RecyclerView.ViewHolder(rootBinding.root){
+    inner class RecyclerViewHolder(private val rootBinding: RecyclerViewItemBinding):RecyclerView.ViewHolder(rootBinding.root),ExpandableInterface{
         var headerBinding:HeaderViewBinding
         var expandableBinding:ExpandableViewBinding
         init {
@@ -52,8 +52,8 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
                             (itemView.parent as RecyclerView).findViewHolderForAdapterPosition(
                                 lastExpandedPosition
                             )
-                        if (lastExpandedViewHolder is RecyclerViewHolder) {
-                            lastExpandedViewHolder.rootBinding.expandableLayout.collapse()
+                        if (lastExpandedViewHolder is ExpandableInterface) {
+                            lastExpandedViewHolder.collapse()
                         }
                         list[lastExpandedPosition] = false
                     }
@@ -63,5 +63,17 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
                 lastExpandedPosition = adapterPosition
             }
         }
+
+        override fun expand() {
+            rootBinding.expandableLayout.expand()
+        }
+
+        override fun collapse() {
+            rootBinding.expandableLayout.collapse()
+        }
+    }
+    interface ExpandableInterface{
+        fun expand()
+        fun collapse()
     }
 }
