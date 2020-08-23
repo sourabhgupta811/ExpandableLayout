@@ -45,7 +45,9 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
             }
             headerBinding.root.setOnClickListener {
                 if(lastExpandedPosition==adapterPosition){
-                    rootBinding.expandableLayout.toggle()
+                    val expanding = rootBinding.expandableLayout.toggle()
+                    lastExpandedPosition = if(expanding) adapterPosition else -1
+                    list[adapterPosition] = expanding
                 }else{
                     if(lastExpandedPosition!=-1) {
                         val lastExpandedViewHolder =
@@ -59,8 +61,8 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
                     }
                     rootBinding.expandableLayout.expand()
                     list[adapterPosition] = true
+                    lastExpandedPosition = adapterPosition
                 }
-                lastExpandedPosition = adapterPosition
             }
         }
 
