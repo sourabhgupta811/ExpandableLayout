@@ -1,0 +1,3 @@
+include ':expandable_layout'
+include ':app'
+rootProject.name = "ExpandableLayout"
