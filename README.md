@@ -4,7 +4,7 @@ Easy to use ExpandableView for Android.
 <br><b>Examples included-</b>
 <ul>
 <li>
-[Expandable View in RecyclerView](https://github.com/sourabhgupta811/ExpandableLayout/blob/master/app/src/main/java/com/samnetworks/expandablelayout/RecyclerViewAdapter.kt)
+    <a href="https://github.com/sourabhgupta811/ExpandableLayout/blob/master/app/src/main/java/com/samnetworks/expandablelayout/RecyclerViewAdapter.kt">Expandable View in RecyclerView</a>
 </li></ul><br><br>
 <b>How to use</b><br>
 <i>In xml-</i>
